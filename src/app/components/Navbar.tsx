@@ -5,7 +5,7 @@ import { useState } from "react";
 import { Menu, X, ArrowUpRight } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
 
-const links = [
+const navLinks = [
   { name: "Home", href: "#home" },
   { name: "About", href: "#about" },
   { name: "Projects", href: "#projects" },
@@ -25,12 +25,12 @@ export default function Navbar() {
           AFIZ<span className="text-cyan-300">.</span>
         </a>
 
-        <div className="hidden items-center gap-9 rounded-full border border-white/10 bg-white/5 px-8 py-3 backdrop-blur-xl md:flex">
-          {links.map((link) => (
+        <div className="hidden items-center gap-9 rounded-full border border-white/15 bg-white/10 px-9 py-4 shadow-xl backdrop-blur-xl md:flex">
+          {navLinks.map((link) => (
             <a
               key={link.name}
               href={link.href}
-              className="text-sm text-slate-300 transition-colors hover:text-cyan-300"
+              className="text-sm font-medium text-slate-200 transition-colors hover:text-cyan-300"
             >
               {link.name}
             </a>
@@ -38,11 +38,11 @@ export default function Navbar() {
         </div>
 
         <a
-          href="mailto:hello@example.com"
-          className="hidden items-center gap-2 rounded-full border border-white/20 px-5 py-3 text-sm font-medium transition-colors hover:bg-white hover:text-black md:flex"
+          href="#contact"
+          className="hidden items-center gap-2 rounded-full border border-white/25 bg-black/20 px-6 py-3 text-sm font-medium text-white backdrop-blur-md transition-colors hover:bg-white/15 md:flex"
         >
           Let's Talk
-          <ArrowUpRight size={16} />
+          <ArrowUpRight size={17} />
         </a>
 
         <button
@@ -50,7 +50,7 @@ export default function Navbar() {
           aria-label={isOpen ? "Close menu" : "Open menu"}
           aria-expanded={isOpen}
           onClick={() => setIsOpen(!isOpen)}
-          className="rounded-full border border-white/20 p-3 text-white md:hidden"
+          className="rounded-full border border-white/25 bg-black/30 p-3 text-white backdrop-blur-md md:hidden"
         >
           {isOpen ? <X size={22} /> : <Menu size={22} />}
         </button>
@@ -59,13 +59,14 @@ export default function Navbar() {
       <AnimatePresence>
         {isOpen && (
           <motion.div
-            initial={{ opacity: 0, y: -12 }}
+            initial={{ opacity: 0, y: -15 }}
             animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -12 }}
-            className="mx-5 rounded-2xl border border-white/10 bg-[#101722]/95 p-6 shadow-2xl backdrop-blur-xl md:hidden"
+            exit={{ opacity: 0, y: -15 }}
+            transition={{ duration: 0.25 }}
+            className="mx-5 rounded-2xl border border-white/15 bg-[#101722]/95 p-6 shadow-2xl backdrop-blur-xl md:hidden"
           >
             <div className="flex flex-col gap-5">
-              {links.map((link) => (
+              {navLinks.map((link) => (
                 <a
                   key={link.name}
                   href={link.href}

@@ -4,45 +4,36 @@
 import { Suspense, useRef } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
 import {
+  Bounds,
+  Center,
   Float,
   OrbitControls,
   useGLTF,
-  Center,
-  Bounds,
 } from "@react-three/drei";
 import * as THREE from "three";
 
-function Model() {
+function GraduationModel() {
   const { scene } = useGLTF("/models/hero-model.glb");
-  const group = useRef<THREE.Group>(null);
+  const modelRef = useRef<THREE.Group>(null);
 
   useFrame((state, delta) => {
-    if (!group.current) return;
+    if (!modelRef.current) return;
 
-    group.current.rotation.y += delta * 0.12;
+    modelRef.current.rotation.y += delta * 0.12;
 
-    const mouseX = state.pointer.x;
-    const mouseY = state.pointer.y;
-
-    group.current.rotation.x = THREE.MathUtils.lerp(
-      group.current.rotation.x,
-      mouseY * 0.12,
-      0.025
-    );
-
-    group.current.rotation.z = THREE.MathUtils.lerp(
-      group.current.rotation.z,
-      -mouseX * 0.08,
-      0.025
+    modelRef.current.rotation.x = THREE.MathUtils.lerp(
+      modelRef.current.rotation.x,
+      state.pointer.y * 0.08,
+      0.03
     );
   });
 
   return (
-    <group ref={group}>
+    <group ref={modelRef}>
       <Float
-        speed={1.5}
-        rotationIntensity={0.12}
-        floatIntensity={0.45}
+        speed={1.3}
+        rotationIntensity={0.08}
+        floatIntensity={0.25}
       >
         <Center>
           <primitive object={scene} />
@@ -52,12 +43,30 @@ function Model() {
   );
 }
 
+function SceneContent() {
+  return (
+    <>
+      <Bounds fit clip observe margin={1.4}>
+        <GraduationModel />
+      </Bounds>
+
+      <OrbitControls
+        makeDefault
+        enableZoom={false}
+        enablePan={false}
+        enableDamping
+        dampingFactor={0.06}
+      />
+    </>
+  );
+}
+
 export default function HeroScene() {
   return (
     <div className="h-full w-full">
       <Canvas
         camera={{
-          position: [0, 0, 5],
+          position: [0, 0, 6],
           fov: 40,
         }}
         dpr={[1, 1.75]}
@@ -66,44 +75,34 @@ export default function HeroScene() {
           antialias: true,
           powerPreference: "high-performance",
         }}
-        fallback={
-          <div className="flex h-full items-center justify-center text-slate-400">
-            3D preview unavailable
-          </div>
-        }
       >
-        <ambientLight intensity={1.8} />
+        <ambientLight intensity={2.2} />
+
+        <hemisphereLight
+          args={["#d8f6ff", "#64748b", 2]}
+        />
 
         <directionalLight
-          position={[5, 5, 5]}
-          intensity={3}
+          position={[4, 6, 5]}
+          intensity={3.5}
           color="#ffffff"
         />
 
         <pointLight
-          position={[-4, 2, 3]}
-          intensity={40}
-          color="#22d3ee"
+          position={[-4, 2, 4]}
+          intensity={45}
+          color="#67e8f9"
         />
 
         <pointLight
-          position={[3, -2, -2]}
-          intensity={30}
-          color="#8b5cf6"
+          position={[3, -2, -3]}
+          intensity={35}
+          color="#a78bfa"
         />
 
         <Suspense fallback={null}>
-          <Bounds fit clip observe margin={1.35}>
-            <Model />
-          </Bounds>
+          <SceneContent />
         </Suspense>
-
-        <OrbitControls
-          enableZoom={false}
-          enablePan={false}
-          enableDamping
-          dampingFactor={0.05}
-        />
       </Canvas>
     </div>
   );
